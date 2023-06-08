@@ -4,8 +4,6 @@
 [![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner/releases/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner/graphs/commit-activity)
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/Sollimann/d-star-lite.svg)](https://github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner/pulls)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/Sollimann/d-star-lite.svg)](https://github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner/pulls)
-![ViewCount](https://views.whatilearened.today/views/github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
