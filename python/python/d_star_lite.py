@@ -1,7 +1,7 @@
 from priority_queue import PriorityQueue, Priority
-from grid import OccupancyGridMap
+from voxel import OccupancyGridMap
 import numpy as np
-from utils import heuristic, Vertex, Vertices
+from utils import gnd_heuristic, heuristic, Vertex, Vertices
 from typing import Dict, List
 
 OBSTACLE = 255
@@ -9,7 +9,7 @@ UNOCCUPIED = 0
 
 
 class DStarLite:
-    def __init__(self, map: OccupancyGridMap, s_start: (int, int), s_goal: (int, int)):
+    def __init__(self, map: OccupancyGridMap, s_start: (int, int, int), s_goal: (int, int, int)):
         """
         :param map: the ground truth map of the environment provided by gui
         :param s_start: start location
@@ -18,31 +18,33 @@ class DStarLite:
         self.new_edges_and_old_costs = None
 
         # algorithm start
+        self.truemap = map
         self.s_start = s_start
         self.s_goal = s_goal
         self.s_last = s_start
         self.k_m = 0  # accumulation
         self.U = PriorityQueue()
-        self.rhs = np.ones((map.x_dim, map.y_dim)) * np.inf
+        self.rhs = np.ones((map.x_dim, map.y_dim, map.z_dim)) * np.inf
         self.g = self.rhs.copy()
 
         self.sensed_map = OccupancyGridMap(x_dim=map.x_dim,
                                            y_dim=map.y_dim,
-                                           exploration_setting='8N')
+                                           z_dim=map.z_dim,
+                                           exploration_setting='26N')
 
         self.rhs[self.s_goal] = 0
         self.U.insert(self.s_goal, Priority(heuristic(self.s_start, self.s_goal), 0))
 
-    def calculate_key(self, s: (int, int)):
+    def calculate_key(self, s: (int, int, int)):
         """
         :param s: the vertex we want to calculate key
         :return: Priority class of the two keys
         """
-        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + self.k_m
+        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + gnd_heuristic(s, self.truemap) + self.k_m
         k2 = min(self.g[s], self.rhs[s])
         return Priority(k1, k2)
 
-    def c(self, u: (int, int), v: (int, int)) -> float:
+    def c(self, u: (int, int, int), v: (int, int, int)) -> float:
         """
         calcuclate the cost between nodes
         :param u: from vertex
@@ -54,10 +56,10 @@ class DStarLite:
         else:
             return heuristic(u, v)
 
-    def contain(self, u: (int, int)) -> (int, int):
+    def contain(self, u: (int, int, int)) -> (int, int, int):
         return u in self.U.vertices_in_heap
 
-    def update_vertex(self, u: (int, int)):
+    def update_vertex(self, u: (int, int, int)):
         if self.g[u] != self.rhs[u] and self.contain(u):
             self.U.update(u, self.calculate_key(u))
         elif self.g[u] != self.rhs[u] and not self.contain(u):
@@ -104,7 +106,7 @@ class DStarLite:
         self.new_edges_and_old_costs = None
         return new_edges_and_old_costs
 
-    def move_and_replan(self, robot_position: (int, int)):
+    def move_and_replan(self, robot_position: (int, int, int)):
         path = [robot_position]
         self.s_start = robot_position
         self.s_last = self.s_start

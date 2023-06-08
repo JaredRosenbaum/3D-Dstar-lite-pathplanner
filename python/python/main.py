@@ -1,6 +1,7 @@
+#%%
 from gui import Animation
 from d_star_lite import DStarLite
-from grid import OccupancyGridMap, SLAM
+from voxel import OccupancyGridMap, SLAM
 
 OBSTACLE = 255
 UNOCCUPIED = 0
@@ -15,10 +16,11 @@ if __name__ == '__main__':
     V (x=2, y=0)
     x, row
     """
-    x_dim = 100
-    y_dim = 80
-    start = (10, 10)
-    goal = (40, 70)
+    x_dim = 30
+    y_dim = 30
+    z_dim = 5
+    start = (2, 2, 1)
+    goal = (2, 28, 1)
     view_range = 5
 
     gui = Animation(title="D* Lite Path Planning",
@@ -27,6 +29,7 @@ if __name__ == '__main__':
                     margin=0,
                     x_dim=x_dim,
                     y_dim=y_dim,
+                    z_dim=z_dim,
                     start=start,
                     goal=goal,
                     viewing_range=view_range)
@@ -76,6 +79,7 @@ if __name__ == '__main__':
 
         if new_position != last_position:
             last_position = new_position
+            print(new_position)
 
             # slam
             new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)

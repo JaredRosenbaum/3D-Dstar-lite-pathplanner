@@ -1,6 +1,6 @@
 import pygame
 import time
-from grid import OccupancyGridMap
+from voxel import OccupancyGridMap
 from typing import List
 
 # Define some colors
@@ -25,10 +25,11 @@ class Animation:
                  width=10,
                  height=10,
                  margin=0,
-                 x_dim=100,
+                 x_dim=50,
                  y_dim=50,
-                 start=(0, 0),
-                 goal=(50, 50),
+                 z_dim=50,
+                 start=(0, 0, 0),
+                 goal=(50, 50, 50),
                  viewing_range=3):
 
         self.width = width
@@ -36,6 +37,7 @@ class Animation:
         self.margin = margin
         self.x_dim = x_dim
         self.y_dim = y_dim
+        self.z_dim = z_dim
         self.start = start
         self.current = start
         self.observation = {"pos": None, "type": None}
@@ -61,7 +63,8 @@ class Animation:
         """
         self.world = OccupancyGridMap(x_dim=x_dim,
                                       y_dim=y_dim,
-                                      exploration_setting='8N')
+                                      z_dim=z_dim,
+                                      exploration_setting='26N')
 
         # Set title of screen
         pygame.display.set_caption(title)
@@ -78,16 +81,16 @@ class Animation:
     def get_position(self):
         return self.current
 
-    def set_position(self, pos: (int, int)):
+    def set_position(self, pos: (int, int, int)):
         self.current = pos
 
     def get_goal(self):
         return self.goal
 
-    def set_goal(self, goal: (int, int)):
+    def set_goal(self, goal: (int, int, int)):
         self.goal = goal
 
-    def set_start(self, start: (int, int)):
+    def set_start(self, start: (int, int, int)):
         self.start = start
 
     def display_path(self, path=None):
@@ -114,6 +117,19 @@ class Animation:
 
         grid_cell = None
         self.cont = False
+        
+        create_walls = True
+        if create_walls:
+            for x in range(0,self.x_dim):
+                for y in range(0,self.y_dim):
+                    self.world.set_obstacle((x,y,0))
+                    self.world.set_obstacle((x,y,self.z_dim-1))
+                    if x == 0 or x == self.x_dim-1 or y == 0 or y == self.y_dim-1:
+                        for z in range(0,self.z_dim):
+                            if self.world.is_unoccupied((x,y,z)):
+                                self.world.set_obstacle((x,y,z))
+                    
+        
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:  # if user clicked close
@@ -123,8 +139,12 @@ class Animation:
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) or self.cont:
                 # space bar pressed. call next action
                 if path:
-                    (x, y) = path[1]
-                    self.set_position((x, y))
+                    try:
+                        (x, y, z) = path[1]
+                        self.set_position((x, y, z))
+                    except IndexError:
+                        print('Reached Goal')
+                        self.done = True
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
                 print("backspace automates the press space")
@@ -141,9 +161,10 @@ class Animation:
                 # change the x/y screen coordinates to grid coordinates
                 x = row // (self.height + self.margin)
                 y = col // (self.width + self.margin)
+                z = self.current[2] # Later, grab current Z val
 
                 # turn pos into cell
-                grid_cell = (x, y)
+                grid_cell = (x, y, z)
 
                 # set the location in the grid map
                 if self.world.is_unoccupied(grid_cell):
@@ -158,9 +179,10 @@ class Animation:
                 # change the x/y screen coordinates to grid coordinates
                 x = row // (self.height + self.margin)
                 y = col // (self.width + self.margin)
+                z = self.current[2]
 
                 # turn pos into cell
-                grid_cell = (x, y)
+                grid_cell = (x, y, z)
 
                 # set the location in the grid map
                 if not self.world.is_unoccupied(grid_cell):
@@ -175,11 +197,17 @@ class Animation:
         for row in range(self.x_dim):
             for column in range(self.y_dim):
                 # color the cells
-                pygame.draw.rect(self.screen, colors[self.world.occupancy_grid_map[row][column]],
+                pygame.draw.rect(self.screen, colors[self.world.occupancy_grid_map[row][column][self.current[2]]],
                                  [(self.margin + self.width) * column + self.margin,
                                   (self.margin + self.height) * row + self.margin,
                                   self.width,
                                   self.height])
+                if colors[self.world.occupancy_grid_map[row][column][self.current[2]-1]] == OBSTACLE and colors[self.world.occupancy_grid_map[row][column][self.current[2]]] == UNOCCUPIED:
+                    pygame.draw.rect(self.screen, (200, 200, 200),
+                                    [(self.margin + self.width) * column + self.margin,
+                                    (self.margin + self.height) * row + self.margin,
+                                    self.width,
+                                    self.height])
 
         self.display_path(path=path)
         # fill in the goal cell with green
