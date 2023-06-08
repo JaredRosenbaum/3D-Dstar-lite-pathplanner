@@ -28,7 +28,7 @@ class Vertices:
     def vertices(self):
         return self.list
 
-
+# Previous, 2d heuristic
 # def heuristic(p: (int, int), q: (int, int)) -> float:
 #     """
 #     Helper function to compute distance between two points.
@@ -46,12 +46,10 @@ def heuristic(p: (int, int, int), q: (int, int, int)) -> float:
     return answer
 
 def gnd_heuristic(p: (int, int, int), map):
-    # below = (p[0], p[1], p[2]-1)
     if map.occupancy_grid_map[p[0]][p[1]][p[2]] == 0 and map.occupancy_grid_map[p[0]][p[1]][p[2]-1] == 255:
-        # print('Good', map.occupancy_grid_map[p[0]][p[1]][p[2]], map.occupancy_grid_map[p[0]][p[1]][p[2]-1], p)
         return 0
     else:
-        # print('Bad',  map.occupancy_grid_map[p[0]][p[1]][p[2]], map.occupancy_grid_map[p[0]][p[1]][p[2]-1], p)
+        #Arbitrarily large number, might need to be increased for larger maps
         return 100
 
 #I don't think any of these return cost, that's calculated elsewhere.

@@ -90,7 +90,7 @@ class OccupancyGridMap:
         else:
             movements = get_movements_3d_26n(x=x, y=y, z=z)
 
-        # # not needed. Just makes aesthetics to the path
+        # # not needed. Just makes aesthetics to the path --- commented out
         # if (x + y) % 2 == 0: movements.reverse()
 
         filtered_movements = self.filter(neighbors=movements, avoid_obstacles=avoid_obstacles)
