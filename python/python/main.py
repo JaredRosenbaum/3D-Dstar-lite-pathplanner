@@ -18,9 +18,9 @@ if __name__ == '__main__':
     """
     x_dim = 8 
     y_dim = 20
-    z_dim = 5
-    start = (2, 1, 1)
-    goal = (5, 18, 1)
+    z_dim = 1
+    start = (2, 1, 0)
+    goal = (5, 18, 0)
     view_range = 3
  
     gui = Animation(title="D* Lite Path Planning",
@@ -52,6 +52,9 @@ if __name__ == '__main__':
     slam = SLAM(map=new_map,
                 view_range=view_range)
 
+    
+    # #Somehow, we need to run the first instance of D* on a populated map, at least with a floor, because otherwise we can't tell it not to fly.
+    # slam.set_ground_truth_map(gt_map=new_map)
     # new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)
 
     # dstar.new_edges_and_old_costs = new_edges_and_old_costs
@@ -71,12 +74,12 @@ if __name__ == '__main__':
         new_map = gui.world
 
         """
-        if new_observation is not None:
+        if new_observation is not None: 
             if new_observation["type"] == OBSTACLE:
                 dstar.global_map.set_obstacle(pos=new_observation["pos"])
             if new_observation["pos"] == UNOCCUPIED:
                 dstar.global_map.remove_obstacle(pos=new_observation["pos"])
-        """
+        """  
 
         if new_observation is not None:
             old_map = new_map
