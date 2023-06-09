@@ -16,23 +16,23 @@ if __name__ == '__main__':
     V (x=2, y=0)
     x, row
     """
-    x_dim = 30
-    y_dim = 30
+    x_dim = 8 
+    y_dim = 20
     z_dim = 5
-    start = (2, 2, 1)
-    goal = (2, 28, 1)
-    view_range = 5
-
+    start = (2, 1, 1)
+    goal = (5, 18, 1)
+    view_range = 3
+ 
     gui = Animation(title="D* Lite Path Planning",
-                    width=10,
-                    height=10,
+                    width=50,
+                    height=50,
                     margin=0,
                     x_dim=x_dim,
                     y_dim=y_dim,
                     z_dim=z_dim,
                     start=start,
                     goal=goal,
-                    viewing_range=view_range)
+                    viewing_range=view_range) 
 
     new_map = gui.world
     old_map = new_map
@@ -51,6 +51,11 @@ if __name__ == '__main__':
     # SLAM to detect vertices
     slam = SLAM(map=new_map,
                 view_range=view_range)
+
+    # new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)
+
+    # dstar.new_edges_and_old_costs = new_edges_and_old_costs
+    # dstar.sensed_map = slam_map
 
     # move and compute path
     path, g, rhs = dstar.move_and_replan(robot_position=new_position)

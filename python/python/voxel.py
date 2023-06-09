@@ -66,6 +66,17 @@ class OccupancyGridMap:
         """
         (x, y, z) = cell
         return 0 <= x < self.x_dim and 0 <= y < self.y_dim and 0 <= z < self.z_dim
+    
+    def is_grounded(self, pos: (int, int, int)) -> bool:
+        """
+        Checks if the provided coordinates are a free cell 
+        with an obstacle cell (ground) below.
+        """
+        (x,y,z) = pos
+        if z>0:
+            return self.is_unoccupied(pos) and not self.is_unoccupied((x,y,z-1))
+        else:
+            return self.is_unoccupied(pos)
 
     def filter(self, neighbors: List, avoid_obstacles: bool):
         """
@@ -76,6 +87,16 @@ class OccupancyGridMap:
         if avoid_obstacles:
             return [node for node in neighbors if self.in_bounds(node) and self.is_unoccupied(node)]
         return [node for node in neighbors if self.in_bounds(node)]
+    
+    # def filter(self, neighbors: List, avoid_obstacles: bool):
+    #     """
+    #     :param neighbors: list of potential neighbors before filtering
+    #     :param avoid_obstacles: if True, filter out obstacle cells in the list
+    #     :return:
+    #     """
+    #     if avoid_obstacles:
+    #         return [node for node in neighbors if self.in_bounds(node) and self.is_unoccupied(node) and self.is_grounded(node)]
+    #     return [node for node in neighbors if self.in_bounds(node) and self.is_grounded(node)]
 
     def succ(self, vertex: (int, int, int), avoid_obstacles: bool = True) -> list:
         """

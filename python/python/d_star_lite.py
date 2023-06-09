@@ -40,7 +40,7 @@ class DStarLite:
         :param s: the vertex we want to calculate key
         :return: Priority class of the two keys
         """
-        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + gnd_heuristic(s, self.truemap) + self.k_m
+        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + gnd_heuristic(s, self.sensed_map) + self.k_m
         k2 = min(self.g[s], self.rhs[s])
         return Priority(k1, k2)
 
@@ -53,6 +53,8 @@ class DStarLite:
         """
         if not self.sensed_map.is_unoccupied(u) or not self.sensed_map.is_unoccupied(v):
             return float('inf')
+        # elif self.sensed_map.is_unoccupied((v[0],v[1],v[2]-1)):
+        #     return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
         else:
             return heuristic(u, v)
 

@@ -45,12 +45,23 @@ def heuristic(p: (int, int, int), q: (int, int, int)) -> float:
         print('You are on an obstacle!')
     return answer
 
+# def gnd_heuristic(p: (int, int, int), map):
+#     if map.occupancy_grid_map[p[0]][p[1]][p[2]] == 0 and map.occupancy_grid_map[p[0]][p[1]][p[2]-1] == 255:
+#         return 0
+#     else:
+#         #Arbitrarily large number, might need to be increased for larger maps
+#         return 1000
 def gnd_heuristic(p: (int, int, int), map):
-    if map.occupancy_grid_map[p[0]][p[1]][p[2]] == 0 and map.occupancy_grid_map[p[0]][p[1]][p[2]-1] == 255:
-        return 0
+    zlist = [0]
+    for z in range(0, p[2]):
+        if map.occupancy_grid_map[p[0]][p[1]][z] == 255:
+            zlist.append(z)
+    # print(p, p[2]-max(zlist))
+    if p[2]>0:
+        return (p[2]-max(zlist))*100
     else:
-        #Arbitrarily large number, might need to be increased for larger maps
         return 100
+    
 
 #I don't think any of these return cost, that's calculated elsewhere.
 def get_movements_4n(x: int, y: int) -> List:
