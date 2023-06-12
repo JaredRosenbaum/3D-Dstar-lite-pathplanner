@@ -56,7 +56,6 @@ class DStarLite:
         elif self.truemap.is_unoccupied((v[0],v[1],v[2]-1)):
             return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
         else:
-            print('here')
             return heuristic(u, v)+gnd_heuristic(v,self.sensed_map)
 
     def contain(self, u: (int, int, int)) -> (int, int, int):

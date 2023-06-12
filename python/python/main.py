@@ -16,11 +16,11 @@ if __name__ == '__main__':
     V (x=2, y=0)
     x, row
     """
-    x_dim = 5
+    x_dim = 10
     y_dim = 20
-    z_dim = 4
-    start = (1, 1, 1)
-    goal = (1, 18, 1)
+    z_dim = 5
+    start = (3, 2, 1)
+    goal = (7, 18, 1)
     view_range = 5
  
     gui = Animation(title="D* Lite Path Planning", 
@@ -53,23 +53,21 @@ if __name__ == '__main__':
                 view_range=view_range)
 
     
-    # #Somehow, we need to run the first instance of D* on a populated map, at least with a floor, because otherwise we can't tell it not to fly.
-    gui.run_game(path=[new_position])
-    new_position = gui.current
-    new_observation = gui.observation
-    new_map = gui.world
-    slam.set_ground_truth_map(gt_map=new_map)
-    new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)
-    dstar.new_edges_and_old_costs = new_edges_and_old_costs
-    dstar.sensed_map = gui.world
+    # # Somehow, we need to run the first instance of D* on a populated map, at least with a floor, because otherwise we can't tell it not to fly. 
+    ### ^ Update, we do this by adding the run_game line below, and by using the ground truth map when creating the "cost map". 
+    ### ^ This correlates to the gmapping/cartographer style voxel-map that the robot would have from a previous teleoperated mapping route.
+    ### ^ This planner will expressly not be for exploring unexplored areas - you should have an existing map, and the replanning will allow for you to handle dynamic environment changes. 
+    ### Other notes: gui.world is the ground truth map, dstar.sensed_map is the SLAM map, that builds up as you traverse.
+    gui.run_game(path=None)
     path, g, rhs = dstar.move_and_replan(robot_position=new_position)
+    print(dstar.sensed_map.get_map())
 
     while not gui.done:
         # update the map
         # print(path)
         # drive gui
         gui.run_game(path=path)
- 
+        print(dstar.sensed_map.get_map())
         new_position = gui.current
         new_observation = gui.observation
         new_map = gui.world

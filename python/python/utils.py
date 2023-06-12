@@ -45,15 +45,12 @@ def heuristic(p: (int, int, int), q: (int, int, int)) -> float:
         print('You are on an obstacle!')
     return answer
 
-# def gnd_heuristic(p: (int, int, int), map):
-#     if map.occupancy_grid_map[p[0]][p[1]][p[2]] == 0 and map.occupancy_grid_map[p[0]][p[1]][p[2]-1] == 255:
-#         return 0
-#     else:
-#         #Arbitrarily large number, might need to be increased for larger maps
-#         return 1000
+
 def gnd_heuristic(p: (int, int, int), map):
+    #Deprecated, but might return later :)
+    return 0
     zlist = [0]
-    #At the point of interest (x,y), look at every point below it. If the point is occupied, add it to the z_list. 
+    #At the point of interest (x,y), look at every point below it. If the point is occupied, add it to the z_list. Return the distance to that closest point.
     for z in range(0, p[2]):
         if map.occupancy_grid_map[p[0]][p[1]][z] == 255:
             zlist.append(z)
