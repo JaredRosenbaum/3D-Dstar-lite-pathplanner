@@ -11,7 +11,7 @@
 </p>
 
 
-This software is an extended implementation of the D*-Lite algorithm as explained in [Koenig, 2002](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf). The D* Lite algorithm was developed by Sven Koenig and Maxim Likhachev for a faster more lightweight alternative to the Dynamic A* algorithm (developed by Anthony Stentz in 1995). 
+This software is an extended implementation of the D*-Lite algorithm as explained in [Koenig, 2002](http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf). The D* Lite algorithm was developed by Sven Koenig and Maxim Likhachev for a faster more lightweight alternative to the Dynamic A* algorithm (developed by Anthony Stentz in 1995). The express purpose of this version of the algorithm is to allow for 3D navigation on a grounded robot, leading to an added cost function preventing the robot from targetting voxels without a "floor" below them.
 
 ## Dependencies
 * pip install pygame
