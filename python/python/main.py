@@ -16,14 +16,14 @@ if __name__ == '__main__':
     V (x=2, y=0)
     x, row
     """
-    x_dim = 8 
+    x_dim = 5
     y_dim = 20
-    z_dim = 1
-    start = (2, 1, 0)
-    goal = (5, 18, 0)
-    view_range = 3
+    z_dim = 4
+    start = (1, 1, 1)
+    goal = (1, 18, 1)
+    view_range = 5
  
-    gui = Animation(title="D* Lite Path Planning",
+    gui = Animation(title="D* Lite Path Planning", 
                     width=50,
                     height=50,
                     margin=0,
@@ -54,13 +54,14 @@ if __name__ == '__main__':
 
     
     # #Somehow, we need to run the first instance of D* on a populated map, at least with a floor, because otherwise we can't tell it not to fly.
-    # slam.set_ground_truth_map(gt_map=new_map)
-    # new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)
-
-    # dstar.new_edges_and_old_costs = new_edges_and_old_costs
-    # dstar.sensed_map = slam_map
-
-    # move and compute path
+    gui.run_game(path=[new_position])
+    new_position = gui.current
+    new_observation = gui.observation
+    new_map = gui.world
+    slam.set_ground_truth_map(gt_map=new_map)
+    new_edges_and_old_costs, slam_map = slam.rescan(global_position=new_position)
+    dstar.new_edges_and_old_costs = new_edges_and_old_costs
+    dstar.sensed_map = gui.world
     path, g, rhs = dstar.move_and_replan(robot_position=new_position)
 
     while not gui.done:
@@ -68,7 +69,7 @@ if __name__ == '__main__':
         # print(path)
         # drive gui
         gui.run_game(path=path)
-
+ 
         new_position = gui.current
         new_observation = gui.observation
         new_map = gui.world

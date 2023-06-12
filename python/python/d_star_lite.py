@@ -53,9 +53,10 @@ class DStarLite:
         """
         if not self.sensed_map.is_unoccupied(u) or not self.sensed_map.is_unoccupied(v):
             return float('inf')
-        # elif self.sensed_map.is_unoccupied((v[0],v[1],v[2]-1)):
-        #     return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
+        elif self.truemap.is_unoccupied((v[0],v[1],v[2]-1)):
+            return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
         else:
+            print('here')
             return heuristic(u, v)+gnd_heuristic(v,self.sensed_map)
 
     def contain(self, u: (int, int, int)) -> (int, int, int):
@@ -83,7 +84,7 @@ class DStarLite:
                 pred = self.sensed_map.succ(vertex=u)
                 for s in pred:
                     if s != self.s_goal:
-                        self.rhs[s] = min(self.rhs[s], self.c(s, u) + self.g[u])
+                        self.rhs[s] = min(self.rhs[s], self.c(s, u)-gnd_heuristic(u,self.sensed_map) + self.g[u])
                     self.update_vertex(s)
             else:
                 self.g_old = self.g[u]
@@ -91,7 +92,7 @@ class DStarLite:
                 pred = self.sensed_map.succ(vertex=u)
                 pred.append(u)
                 for s in pred:
-                    if self.rhs[s] == self.c(s, u) + self.g_old:
+                    if self.rhs[s] == self.c(s, u)-gnd_heuristic(u,self.sensed_map) + self.g_old:
                         if s != self.s_goal:
                             min_s = float('inf')
                             succ = self.sensed_map.succ(vertex=s)
@@ -116,7 +117,7 @@ class DStarLite:
 
         while self.s_start != self.s_goal:
             assert (self.rhs[self.s_start] != float('inf')), "There is no known path!"
-
+            # print(self.sensed_map.get_map())
             succ = self.sensed_map.succ(self.s_start, avoid_obstacles=False)
             min_s = float('inf')
             arg_min = None

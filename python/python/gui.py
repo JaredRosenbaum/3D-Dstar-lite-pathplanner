@@ -124,7 +124,8 @@ class Animation:
                 for y in range(0,self.y_dim):
                     if self.z_dim>1:
                         self.world.set_obstacle((x,y,0))
-                        self.world.set_obstacle((x,y,self.z_dim-1))
+                        # if self.z_dim>2:
+                        #     self.world.set_obstacle((x,y,self.z_dim-1))
                     if x == 0 or x == self.x_dim-1 or y == 0 or y == self.y_dim-1:
                         for z in range(0,self.z_dim):
                             if self.world.is_unoccupied((x,y,z)):

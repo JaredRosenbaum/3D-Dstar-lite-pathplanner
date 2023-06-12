@@ -53,14 +53,14 @@ def heuristic(p: (int, int, int), q: (int, int, int)) -> float:
 #         return 1000
 def gnd_heuristic(p: (int, int, int), map):
     zlist = [0]
+    #At the point of interest (x,y), look at every point below it. If the point is occupied, add it to the z_list. 
     for z in range(0, p[2]):
         if map.occupancy_grid_map[p[0]][p[1]][z] == 255:
             zlist.append(z)
-    # print(p, p[2]-max(zlist))
     if p[2]>0:
-        return (p[2]-max(zlist))*100
+        return (p[2]-max(zlist)-1)
     else:
-        return 100
+        return 0
     
 
 #I don't think any of these return cost, that's calculated elsewhere.

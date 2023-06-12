@@ -11,12 +11,13 @@ class OccupancyGridMap:
         """
         set initial values for the map occupancy grid
         |----------> y, column
-        |           (x=0,y=2)
+        |           (x=0,y=2, z=n)
         |
-        V (x=2, y=0)
+        V (x=2, y=0, z=n)    (.) z, depth
         x, row
         :param x_dim: dimension in the x direction
         :param y_dim: dimension in the y direction
+        :param z_dim: dimension in the z direction
         """
         self.x_dim = x_dim
         self.y_dim = y_dim
