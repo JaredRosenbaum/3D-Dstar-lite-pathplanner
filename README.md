@@ -7,7 +7,7 @@
 
 
 <p align="center">
-  <img src="https://github.com/Sollimann/Dstar-lite-pathplanner/blob/master/docs/Dstar.gif">
+  <img src="https://github.com/JaredRosenbaum/3D-Dstar-lite-pathplanner/blob/master/docs/D_star_lite_demo3.gif">
 </p>
 
 
