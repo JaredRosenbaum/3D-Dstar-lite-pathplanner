@@ -40,7 +40,7 @@ class DStarLite:
         :param s: the vertex we want to calculate key
         :return: Priority class of the two keys
         """
-        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + gnd_heuristic(s, self.sensed_map) + self.k_m
+        k1 = min(self.g[s], self.rhs[s]) + heuristic(self.s_start, s) + self.k_m
         k2 = min(self.g[s], self.rhs[s])
         return Priority(k1, k2)
 
@@ -56,7 +56,7 @@ class DStarLite:
         elif self.truemap.is_unoccupied((v[0],v[1],v[2]-1)):
             return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
         else:
-            return heuristic(u, v)+gnd_heuristic(v,self.sensed_map)
+            return heuristic(u, v)
 
     def contain(self, u: (int, int, int)) -> (int, int, int):
         return u in self.U.vertices_in_heap
@@ -83,7 +83,7 @@ class DStarLite:
                 pred = self.sensed_map.succ(vertex=u)
                 for s in pred:
                     if s != self.s_goal:
-                        self.rhs[s] = min(self.rhs[s], self.c(s, u)-gnd_heuristic(u,self.sensed_map) + self.g[u])
+                        self.rhs[s] = min(self.rhs[s], self.c(s, u) + self.g[u])
                     self.update_vertex(s)
             else:
                 self.g_old = self.g[u]
@@ -91,7 +91,7 @@ class DStarLite:
                 pred = self.sensed_map.succ(vertex=u)
                 pred.append(u)
                 for s in pred:
-                    if self.rhs[s] == self.c(s, u)-gnd_heuristic(u,self.sensed_map) + self.g_old:
+                    if self.rhs[s] == self.c(s, u)+ self.g_old:
                         if s != self.s_goal:
                             min_s = float('inf')
                             succ = self.sensed_map.succ(vertex=s)

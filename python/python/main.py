@@ -18,14 +18,14 @@ if __name__ == '__main__':
     """
     x_dim = 10
     y_dim = 20
-    z_dim = 5
-    start = (3, 2, 1)
+    z_dim = 4
+    start = (4, 2, 1)
     goal = (7, 18, 1)
-    view_range = 5
+    view_range = 3
  
     gui = Animation(title="D* Lite Path Planning", 
-                    width=50,
-                    height=50,
+                    width=40,
+                    height=40,
                     margin=0,
                     x_dim=x_dim,
                     y_dim=y_dim,
@@ -60,14 +60,11 @@ if __name__ == '__main__':
     ### Other notes: gui.world is the ground truth map, dstar.sensed_map is the SLAM map, that builds up as you traverse.
     gui.run_game(path=None)
     path, g, rhs = dstar.move_and_replan(robot_position=new_position)
-    print(dstar.sensed_map.get_map())
 
     while not gui.done:
         # update the map
-        # print(path)
         # drive gui
         gui.run_game(path=path)
-        print(dstar.sensed_map.get_map())
         new_position = gui.current
         new_observation = gui.observation
         new_map = gui.world

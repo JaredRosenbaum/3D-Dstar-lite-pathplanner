@@ -57,6 +57,34 @@ class OccupancyGridMap:
         #    raise IndexError("Map index out of bounds")
 
         return self.occupancy_grid_map[x][y][z] == UNOCCUPIED
+    #%%
+    def is_accessible(self, beg: (int, int, int), fin: (int, int, int)) -> bool:
+        pattern = (fin[0]-beg[0], fin[1]-beg[1],fin[2]-beg[2])
+        dimensions = 0
+        for i in pattern:
+            dimensions = dimensions+abs(i)
+        
+        if self.exploration_setting == '6N':  # change this
+            movementsA = get_movements_3d_6n(x=beg[0],y=beg[1],z=beg[2])
+        else:
+            movementsA = get_movements_3d_26n(x=beg[0],y=beg[1],z=beg[2])
+        
+        if self.exploration_setting == '6N':  # change this
+            movementsB = get_movements_3d_6n(x=fin[0],y=fin[1],z=fin[2])
+        else:
+            movementsB = get_movements_3d_26n(x=fin[0],y=fin[1],z=fin[2])
+        
+        
+        num_occ = 0
+        for node in movementsA:
+            if node in movementsB and self.in_bounds(node) and not self.is_unoccupied(node):
+                num_occ = num_occ+1
+        
+        return dimensions > num_occ
+#%%
+    def filter2(self, cell: (int, int, int), neighbors: List):
+        return [node for node in neighbors if self.is_accessible(beg=cell, fin=node)]
+
 
     def in_bounds(self, cell: (int, int, int)) -> bool:
         """
@@ -67,17 +95,6 @@ class OccupancyGridMap:
         """
         (x, y, z) = cell
         return 0 <= x < self.x_dim and 0 <= y < self.y_dim and 0 <= z < self.z_dim
-    
-    def is_grounded(self, pos: (int, int, int)) -> bool:
-        """
-        Checks if the provided coordinates are a free cell 
-        with an obstacle cell (ground) below.
-        """
-        (x,y,z) = pos
-        if z>0:
-            return self.is_unoccupied(pos) and not self.is_unoccupied((x,y,z-1))
-        else:
-            return self.is_unoccupied(pos)
 
     def filter(self, neighbors: List, avoid_obstacles: bool):
         """
@@ -88,16 +105,6 @@ class OccupancyGridMap:
         if avoid_obstacles:
             return [node for node in neighbors if self.in_bounds(node) and self.is_unoccupied(node)]
         return [node for node in neighbors if self.in_bounds(node)]
-    
-    # def filter(self, neighbors: List, avoid_obstacles: bool):
-    #     """
-    #     :param neighbors: list of potential neighbors before filtering
-    #     :param avoid_obstacles: if True, filter out obstacle cells in the list
-    #     :return:
-    #     """
-    #     if avoid_obstacles:
-    #         return [node for node in neighbors if self.in_bounds(node) and self.is_unoccupied(node) and self.is_grounded(node)]
-    #     return [node for node in neighbors if self.in_bounds(node) and self.is_grounded(node)]
 
     def succ(self, vertex: (int, int, int), avoid_obstacles: bool = True) -> list:
         """
@@ -116,6 +123,7 @@ class OccupancyGridMap:
         # if (x + y) % 2 == 0: movements.reverse()
 
         filtered_movements = self.filter(neighbors=movements, avoid_obstacles=avoid_obstacles)
+        tfiltered_movements = self.filter2(cell=vertex, neighbors=filtered_movements)
         return list(filtered_movements)
 
     def set_obstacle(self, pos: (int, int, int)):
