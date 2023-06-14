@@ -67,6 +67,7 @@ class Animation:
                                       exploration_setting='26N')
 
         # Set title of screen
+        self.title = title
         pygame.display.set_caption(title)
 
         # set font
@@ -77,6 +78,10 @@ class Animation:
 
         # used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
+        
+    def set_title(self, new_title):
+        pygame.display.set_caption(self.title + '. Z level: ' + new_title)
+        return
 
     def get_position(self):
         return self.current

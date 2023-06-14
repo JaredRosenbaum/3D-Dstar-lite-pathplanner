@@ -53,8 +53,8 @@ class DStarLite:
         """
         if not self.sensed_map.is_unoccupied(u) or not self.sensed_map.is_unoccupied(v):
             return float('inf')
-        elif self.truemap.is_unoccupied((v[0],v[1],v[2]-1)):
-            return float('inf') #DONT FALL OFF CLIFFS! Doesn't work but don't want to nix this yet.
+        elif self.truemap.is_unoccupied((v[0],v[1],v[2]-1)) and v[2] != 0:
+            return float('inf')
         else:
             return heuristic(u, v)
 

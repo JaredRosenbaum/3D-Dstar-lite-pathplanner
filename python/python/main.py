@@ -68,7 +68,8 @@ if __name__ == '__main__':
         new_position = gui.current
         new_observation = gui.observation
         new_map = gui.world
-
+        
+        gui.set_title(str(new_position[2]))
         """
         if new_observation is not None: 
             if new_observation["type"] == OBSTACLE:
